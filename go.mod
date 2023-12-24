@@ -18,6 +18,7 @@ require (
 	github.com/brentp/intintmap v0.0.0-20190211203843-30dc0ade9af9 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/df-mc/atomic v1.10.0 // indirect
+	github.com/df-mc/npc v1.0.4 // indirect
 	github.com/df-mc/worldupgrader v1.0.11 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect

@@ -5,26 +5,91 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/df-mc/dragonfly/server/player"
 )
 
 type Permission struct {
-	name      string
-	xuid      string
-	permLevel int
+	Name      string
+	Xuid      string
+	PermLevel int //0 = member, 1 = operator
 }
 
-var permissions []Permission
+var permissions = make([]*Permission, 1)
+
+var filePath = "./config/permission.json"
+
+func FindByXuid(xuid string) *Permission {
+	var val *Permission = nil
+
+	for i := range permissions {
+		permission := permissions[i]
+
+		if permission.Xuid == xuid {
+			val = permission
+		}
+	}
+
+	return val
+}
+
+func IsPerm(p *player.Player, level int) bool {
+	var perm = FindByXuid(p.XUID())
+
+	if perm == nil {
+		return (level == 0)
+	}
+
+	return level == perm.PermLevel
+}
+
+func SetPermission(p *player.Player, level int) {
+	LoadPermission()
+
+	var perm = FindByXuid(p.XUID())
+
+	if perm == nil {
+		data := Permission{
+			Name:      p.Name(),
+			Xuid:      p.XUID(),
+			PermLevel: level,
+		}
+
+		permissions = append(permissions, &data)
+	} else {
+		perm.PermLevel = level
+	}
+
+	SavePermission()
+}
 
 func LoadPermission() {
-	data, err := os.Open("./config/permission.json")
+	file, err := os.Open(filePath)
+	defer file.Close()
 
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	byteVal, _ := io.ReadAll(data)
+	data, err := io.ReadAll(file)
 
-	json.Unmarshal(byteVal, &permissions)
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	fmt.Println(permissions)
+	err = json.Unmarshal(data, &permissions)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func SavePermission() {
+	data, err := json.Marshal(permissions)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	os.WriteFile(filePath, data, os.FileMode(0644))
 }

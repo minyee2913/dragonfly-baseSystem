@@ -4,7 +4,7 @@
 
 [Players]
   Folder = "players"
-  MaxCount = 0
+  MaxCount = 20
   MaximumChunkRadius = 32
   SaveData = true
 
