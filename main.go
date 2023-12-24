@@ -2,19 +2,15 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/df-mc/dragonfly/server"
-	"github.com/df-mc/dragonfly/server/block"
-	"github.com/df-mc/dragonfly/server/block/cube"
-	"github.com/df-mc/dragonfly/server/cmd"
-	"github.com/df-mc/dragonfly/server/item"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
-	"github.com/df-mc/dragonfly/server/world"
-	"github.com/df-mc/plots/plot"
-	"github.com/df-mc/plots/plot/command"
+	"github.com/df-mc/plots/system"
+	"github.com/df-mc/plots/system/console"
 	"github.com/pelletier/go-toml"
 	"github.com/sirupsen/logrus"
-	"os"
 )
 
 func main() {
@@ -26,50 +22,26 @@ func main() {
 
 	conf, err := readConfig(log)
 	if err != nil {
-		log.Fatalf("error reading conf file: %v", err)
+		log.Fatalln(err)
 	}
 
-	settings := plot.Settings{
-		FloorBlock:    block.Grass{},
-		BoundaryBlock: block.StainedTerracotta{Colour: item.ColourCyan()},
-		RoadBlock:     block.Concrete{Colour: item.ColourGrey()},
-		PlotWidth:     32,
-		MaximumPlots:  16,
-	}
-	conf.Generator = func(dim world.Dimension) world.Generator {
-		return plot.NewGenerator(settings)
-	}
+	srv := conf.New()
+	srv.CloseOnProgramEnd()
 
-	s := conf.New()
-	s.CloseOnProgramEnd()
+	server.New()
 
-	w := s.World()
-	w.SetDefaultGameMode(world.GameModeCreative)
-	w.SetSpawn(cube.Pos{2, plot.RoadHeight, 2})
-	w.SetTime(5000)
-	w.StopTime()
+	srv.Listen()
 
-	db, err := plot.OpenDB("plots", settings)
-	if err != nil {
-		log.Fatalf("error opening plot database: %v", err)
-	}
-	w.Handle(plot.NewWorldHandler(w, settings))
-	cmd.Register(cmd.New("plot", "Manages plots and their settings.", []string{"p", "plot"},
-		command.Claim{},
-		command.List{},
-		command.Teleport{},
-		command.Delete{},
-		command.Clear{},
-		command.Auto{},
-	))
+	system.SystemMain(srv)
 
-	s.Listen()
+	go console.HandleConsole(srv)
 
-	for s.Accept(func(p *player.Player) {
-		p.Handle(plot.NewPlayerHandler(p, settings, db))
+	for srv.Accept(func(p *player.Player) {
+		go system.FirePlayerJoin(p)
 	}) {
 	}
-	_ = db.Close()
+
+	srv.End()
 }
 
 // readConfig reads the configuration from the config.toml file, or creates the
