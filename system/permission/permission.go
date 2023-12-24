@@ -16,7 +16,7 @@ type Permission struct {
 var permissions []Permission
 
 func LoadPermission() {
-	data, err := os.Open("permission.json")
+	data, err := os.Open("./config/permission.json")
 
 	if err != nil {
 		fmt.Println(err)
