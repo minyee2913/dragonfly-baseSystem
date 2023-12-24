@@ -11,14 +11,15 @@
 [Resources]
   AutoBuildPack = true
   Folder = "resources"
-  Required = false
+  Required = true
 
 [Server]
   AuthEnabled = true
-  JoinMessage = "%v has joined the game"
+  JoinMessage = "그의 이름은 바로... %v"
   Name = "Dragonfly Server"
-  QuitMessage = "%v has left the game"
+  QuitMessage = "안녕 너를 기억할게. %v"
   ShutdownMessage = "Server closed."
 
 [World]
-  Folder = "world"
+  Folder = "worlds/play"
+  SaveData = true

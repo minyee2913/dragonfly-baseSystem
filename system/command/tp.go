@@ -1,10 +1,13 @@
 package command
 
 import (
+	"time"
+
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
-	"github.com/df-mc/plots/system/permission"
 	"github.com/go-gl/mathgl/mgl64"
+	"github.com/minyee2913/dragonfly-baseSystem/system/permission"
+	"github.com/minyee2913/dragonfly-baseSystem/system/serv"
 )
 
 type TpCommand struct {
@@ -12,9 +15,18 @@ type TpCommand struct {
 }
 
 func (c TpCommand) Run(source cmd.Source, output *cmd.Output) {
-	source.(*player.Player).Teleport(c.Pos)
+	//source.(*player.Player).Teleport(c.Pos)
 
-	output.Printf("%.1f %.1f %.1f (으)로 순간이동 하였습니다", c.Pos.X(), c.Pos.Y(), c.Pos.Z())
+	go func() {
+		time.Sleep(50 * time.Millisecond)
+		serv.GetServer().Nether().AddEntity(source.(*player.Player))
+		time.Sleep(3 * time.Second)
+		serv.GetServer().Nether().RemoveEntity(source.(*player.Player))
+		time.Sleep(50 * time.Millisecond)
+		serv.GetServer().World().AddEntity(source.(*player.Player))
+	}()
+
+	//output.Printf("%.1f %.1f %.1f (으)로 순간이동 하였습니다", c.Pos.X(), c.Pos.Y(), c.Pos.Z())
 }
 
 func (TpCommand) Allow(source cmd.Source) bool {

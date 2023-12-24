@@ -2,9 +2,9 @@ package system
 
 import (
 	"github.com/df-mc/dragonfly/server"
-	"github.com/df-mc/plots/system/command"
-	"github.com/df-mc/plots/system/permission"
-	"github.com/df-mc/plots/system/serv"
+	"github.com/minyee2913/dragonfly-baseSystem/system/command"
+	"github.com/minyee2913/dragonfly-baseSystem/system/permission"
+	"github.com/minyee2913/dragonfly-baseSystem/system/serv"
 )
 
 func SystemMain(srv *server.Server) {

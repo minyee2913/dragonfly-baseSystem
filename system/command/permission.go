@@ -3,12 +3,13 @@ package command
 import (
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
-	"github.com/df-mc/plots/system/permission"
-	"github.com/df-mc/plots/system/serv"
+	"github.com/minyee2913/dragonfly-baseSystem/system/command/enum"
+	"github.com/minyee2913/dragonfly-baseSystem/system/permission"
+	"github.com/minyee2913/dragonfly-baseSystem/system/serv"
 )
 
 type PermissionCommand struct {
-	Player PlayerEnum
+	Player enum.PlayerSelector
 	Level  int
 }
 

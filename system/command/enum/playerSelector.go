@@ -1,17 +1,17 @@
-package command
+package enum
 
 import (
 	"github.com/df-mc/dragonfly/server/cmd"
-	"github.com/df-mc/plots/system/serv"
+	"github.com/minyee2913/dragonfly-baseSystem/system/serv"
 )
 
-type PlayerEnum string
+type PlayerSelector string
 
-func (PlayerEnum) Type() string {
+func (PlayerSelector) Type() string {
 	return "Players"
 }
 
-func (PlayerEnum) Options(source cmd.Source) []string {
+func (PlayerSelector) Options(source cmd.Source) []string {
 	playerNames := []string{}
 
 	players := serv.GetServer().Players()
