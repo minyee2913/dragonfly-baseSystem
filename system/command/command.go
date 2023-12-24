@@ -8,4 +8,5 @@ func RegisterCmd() {
 	cmd.Register(cmd.New("tp", "teleport", nil, TpCommand{}, TpPlayerCommand{}))
 	cmd.Register(cmd.New("getpos", "get position", nil, GetPosCommand{}))
 	cmd.Register(cmd.New("gamemode", "change gamemode", nil, GamemodeCommand{}))
+	cmd.Register(cmd.New("camera", "set your camera", nil, CameraClearCommand{}, CameraSetCommand{}))
 }

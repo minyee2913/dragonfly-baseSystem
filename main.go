@@ -3,15 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	_ "unsafe"
 
 	"github.com/df-mc/dragonfly/server"
-	"github.com/df-mc/dragonfly/server/block"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
-	"github.com/df-mc/dragonfly/server/world"
-	"github.com/df-mc/dragonfly/server/world/biome"
-	"github.com/df-mc/dragonfly/server/world/generator"
-	"github.com/df-mc/dragonfly/server/world/mcdb"
+	"github.com/minyee2913/dragonfly-baseSystem/multiworld"
 	"github.com/minyee2913/dragonfly-baseSystem/system"
 	"github.com/minyee2913/dragonfly-baseSystem/system/console"
 	"github.com/pelletier/go-toml"
@@ -38,32 +35,14 @@ func main() {
 	srv.Listen()
 
 	system.SystemMain(srv)
+	multiworld.Register(srv)
 
-	worldProvider, err := mcdb.Config{Log: log}.Open("worlds/lumiluni")
-
-	conf2, err := readConfig(log)
-
-	confs := world.Config{
-		Log:             log,
-		Dim:             world.Overworld,
-		Provider:        worldProvider,
-		Generator:       generator.NewFlat(biome.Plains{}, []world.Block{block.Grass{}, block.Dirt{}, block.Dirt{}, block.Bedrock{}}),
-		RandomTickSpeed: conf2.RandomTickSpeed,
-		ReadOnly:        conf2.ReadOnlyWorld,
-		Entities:        conf2.Entities,
-		PortalDestination: func(dim world.Dimension) *world.World {
-			return srv.World()
-		},
-	}
-	w := confs.New()
+	multiworld.LoadWorld("test", "worlds/test", log)
 
 	go console.HandleConsole(srv)
 
 	for srv.Accept(func(p *player.Player) {
 		go system.FirePlayerJoin(p)
-		w.AddEntity(p)
-		w.RemoveEntity(p)
-
 	}) {
 	}
 
