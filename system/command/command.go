@@ -9,4 +9,7 @@ func RegisterCmd() {
 	cmd.Register(cmd.New("getpos", "get position", nil, GetPosCommand{}))
 	cmd.Register(cmd.New("gamemode", "change gamemode", nil, GamemodeCommand{}))
 	cmd.Register(cmd.New("camera", "set your camera", nil, CameraClearCommand{}, CameraSetCommand{}))
+	cmd.Register(cmd.New("kick", "kick player", nil, KickCommand{}))
+	cmd.Register(cmd.New("msg", "message to player", nil, MsgCommand{}))
+	cmd.Register(cmd.New("version", "get version", nil, VersionCommand{}))
 }
